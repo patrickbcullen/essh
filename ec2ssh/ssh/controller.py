@@ -6,7 +6,7 @@ class SSHController:
         self.ip = ip
 
     def command(self):
-        return "ssh -o StrictHostKeyChecking=no -o GlobalKnownHostsFile=/dev/null -o UserKnownHostsFile=/dev/null -i ~/.pems/%s.pem %s" % (self.keypair, self.ip)
+        return "ssh -o StrictHostKeyChecking=no -o GlobalKnownHostsFile=/dev/null -o UserKnownHostsFile=/dev/null -i ~/.ssh/%s.pem %s" % (self.keypair, self.ip)
 
     def ssh(self):
         command = self.command()
