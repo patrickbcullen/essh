@@ -1,5 +1,5 @@
-from ec2ssh.ec2.api import EC2
-from ec2ssh.exceptions import EC2SSHException
+from essh.ec2.api import EC2
+from essh.exceptions import ESSHException
 import re
 
 class EC2Controller:

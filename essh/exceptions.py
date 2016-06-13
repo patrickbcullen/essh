@@ -1,3 +1,3 @@
-class EC2SSHException(Exception):
+class ESSHException(Exception):
     def __init__(self,*args,**kwargs):
         Exception.__init__(self,*args,**kwargs)

@@ -9,7 +9,7 @@ from retrying import retry
 from pprint import pprint
 from models import Instance
 from os import environ
-from ec2ssh.exceptions import EC2SSHException
+from essh.exceptions import ESSHException
 
 class EC2:
     def __init__(self, ec2_client=None):
@@ -19,7 +19,7 @@ class EC2:
 
     def _require_env_var(self, key):
         if key not in environ:
-            raise EC2SSHException('Missing %s environment variable' % key)
+            raise ESSHException('Missing %s environment variable' % key)
         return environ[key]
 
     def _get_ec2_client(self):
@@ -64,7 +64,7 @@ class EC2:
         if keypair and instance_id and private_ip:
             return Instance(instance_id, private_ip, keypair)
         else:
-            raise EC2SSHException('Could not find instance with ip address %s' % private_ip)
+            raise ESSHException('Could not find instance with ip address %s' % private_ip)
 
     def _is_retryable_exception(exception):
         return not isinstance(exception, botocore.exceptions.ClientError)

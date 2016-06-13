@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 import warnings
 
 setup(
-    name='ec2ssh',
+    name='essh',
     version='0.1.0',
     packages=find_packages(),
     include_package_data=True,
@@ -14,14 +14,14 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "ec2ssh=ec2ssh.cli:cli",
+            "essh=essh.cli:cli",
         ]
     },
-    namespace_packages = ['ec2ssh'],
+    namespace_packages = ['essh'],
     author="Patrick Cullen",
     author_email="patrickbcullen@gmail.com",
-    url="https://github.com/patrickbcullen/ec2ssh",
-    download_url = "https://github.com/patrickbcullen/ec2ssh/tarball/v0.1.0",
+    url="https://github.com/patrickbcullen/essh",
+    download_url = "https://github.com/patrickbcullen/essh/tarball/v0.1.0",
     keywords = ['ssh', 'ec2', 'aws'],
     classifiers = []
 )
