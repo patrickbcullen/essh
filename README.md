@@ -1,11 +1,11 @@
-# ec2ssh
-EC2 ssh helper command that can find an instance by the instance id, instance name tag, or private IP address. It looks up the keypair to use from the EC2 console and uses the default keypair folder `~/.ssh` and default keypair of extension of `.pem`.
+# essh
+Enhanced ssh command line for EC2 that can find an instance by the instance id, instance name tag, or private IP address. 
 
 ## Usage
 ```
-ec2ssh <instance id>
-ec2ssh <private ip>
-ec2ssh <tag name>
+essh <instance id>
+essh <private ip>
+essh <tag name>
 ```
 
 ## FAQ
@@ -19,5 +19,5 @@ Add the following to your ~/.ssh/config file:
 ```
 CheckHostIP no
 ```
-### How do you change the default keypair folder or extension?
-Set the `--keypair-dir` and/or `--keypair-extension` options on the command line.
+### How do you change the default keypair directory or extension?
+The default keypair directory is `~/.ssh` and default keypair extension is `.pem`. To change either of these set the `--keypair-dir` and/or `--keypair-extension` options on the command line.
