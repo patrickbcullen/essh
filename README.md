@@ -23,6 +23,7 @@ User centos
 Add the following to your ~/.ssh/config file:
 ```
 CheckHostIP no
+StrictHostKeyChecking no
 ```
 ### How do you change the default keypair directory or extension?
 The default keypair directory is `~/.ssh` and default keypair extension is `.pem`. To change either of these set the `--keypair-dir` and/or `--keypair-extension` options on the command line.
