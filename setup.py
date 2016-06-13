@@ -19,6 +19,7 @@ setup(
     },
     namespace_packages = ['ec2ssh'],
     author="Patrick Cullen",
+    author_email="patrickbcullen@gmail.com",
     url="https://github.com/patrickbcullen/ec2ssh",
     download_url = "https://github.com/patrickbcullen/ec2ssh/tarball/v0.1.0",
     keywords = ['ssh', 'ec2', 'aws'],
