@@ -27,16 +27,31 @@ class EC2:
                             aws_secret_access_key=self._require_env_var('AWS_SECRET_ACCESS_KEY'),
                             region_name=environ.get('AWS_REGION', 'us-east-1'))
 
+    def find_by_name(self, name):
+        filters = [
+            {"Name": "instance-state-name", "Values": ["running"]},
+            {"Name": "tag:Name", "Values": [name]}
+        ]
+        return self._find(filters)
+
     def find_by_id(self, id):
-        pass
+        filters = [
+            {"Name": "instance-state-name", "Values": ["running"]},
+            {"Name": "instance-id", "Values": [id]}
+        ]
+        return self._find(filters)
 
     def find_by_ip(self, private_ip):
-        instance_id = None
-        keypair = None
         filters = [
             {"Name": "instance-state-name", "Values": ["running"]},
             {"Name": "private-ip-address", "Values": [private_ip]}
         ]
+        return self._find(filters)
+
+    def _find(self, filters):
+        instance_id = None
+        keypair = None
+        private_ip = None
 
         instances = self._ec2_describe_instances(Filters=filters)
         for reservation in instances.get('Reservations', []):
@@ -44,8 +59,9 @@ class EC2:
                 if 'InstanceId' in instance:
                     instance_id = instance['InstanceId']
                     keypair = instance['KeyName']
+                    private_ip = instance['PrivateIpAddress']
 
-        if keypair and instance_id:
+        if keypair and instance_id and private_ip:
             return Instance(instance_id, private_ip, keypair)
         else:
             raise EC2SSHException('Could not find instance with ip address %s' % private_ip)

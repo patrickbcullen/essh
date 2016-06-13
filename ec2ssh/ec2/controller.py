@@ -14,4 +14,4 @@ class EC2Controller:
         elif re.search(self.ip_regex, target) is not None:
             return self.api.find_by_ip(target)
         else:
-            raise EC2SSHException('unknown target %s' % target)
+            return self.api.find_by_name(target)
