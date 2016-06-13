@@ -1,6 +1,11 @@
 # essh
 Enhanced ssh command line for EC2 that can find an instance by the instance id, instance name tag, or private IP address. 
 
+## Install
+```
+pip install essh
+```
+
 ## Usage
 ```
 essh <instance id>
