@@ -1,12 +1,12 @@
 from subprocess import call
 
 class SSHController:
-    def __init__(self, keypair, ip):
-        self.keypair = keypair
-        self.ip = ip
+    def __init__(self, keypair_dir, keypair_name, keypair_extension, host):
+        self.keypair = '%s/%s.%s' % (keypair_dir, keypair_name, keypair_extension)
+        self.host = host
 
     def command(self):
-        return "ssh -o StrictHostKeyChecking=no -o GlobalKnownHostsFile=/dev/null -o UserKnownHostsFile=/dev/null -i ~/.ssh/%s.pem %s" % (self.keypair, self.ip)
+        return "ssh -i %s %s" % (self.keypair, self.host)
 
     def ssh(self):
         command = self.command()
