@@ -4,7 +4,7 @@ import warnings
 
 setup(
     name='essh',
-    version='0.1.0',
+    version='0.2.0',
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
@@ -21,7 +21,7 @@ setup(
     author="Patrick Cullen",
     author_email="patrickbcullen@gmail.com",
     url="https://github.com/patrickbcullen/essh",
-    download_url = "https://github.com/patrickbcullen/essh/tarball/v0.1.0",
+    download_url = "https://github.com/patrickbcullen/essh/tarball/v0.2.0",
     keywords = ['ssh', 'ec2', 'aws'],
     classifiers = []
 )

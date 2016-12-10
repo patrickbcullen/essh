@@ -10,12 +10,14 @@ from pprint import pprint
 from models import Instance
 from os import environ
 from essh.exceptions import ESSHException
+import re
 
 class EC2:
     def __init__(self, ec2_client=None):
         logging.basicConfig(level=logging.ERROR)
         self.logger = logging.getLogger(__name__)
         self.ec2 = ec2_client or self._get_ec2_client()
+        self.array_regex = re.compile('\[([0-9]+)\]$')
 
     def _require_env_var(self, key):
         if key not in environ:
@@ -28,11 +30,23 @@ class EC2:
                             region_name=environ.get('AWS_REGION', 'us-east-1'))
 
     def find_by_name(self, name):
+        name, index = self._extra_index(name)
+
         filters = [
             {"Name": "instance-state-name", "Values": ["running"]},
             {"Name": "tag:Name", "Values": [name]}
         ]
-        return self._find(filters)
+
+        return self._find(filters, index)
+
+    def _extra_index(self, name):
+        index = 0
+        match = re.findall(self.array_regex, name)
+        if len(match) > 0:
+            name = name.split("[", 1)[0]
+            index = int(match[0][0])
+
+        return name, index
 
     def find_by_id(self, id):
         filters = [
@@ -48,7 +62,14 @@ class EC2:
         ]
         return self._find(filters)
 
-    def _find(self, filters):
+    def _find(self, filters, index=0):
+        instance_id, keypair, private_ip = self._find_by_index(filters, index)
+        if keypair and instance_id and private_ip:
+            return Instance(instance_id, private_ip, keypair)
+        else:
+            raise ESSHException('Could not find instance with ip address %s' % private_ip)
+
+    def _find_by_index(self, filters, index=0):
         instance_id = None
         keypair = None
         private_ip = None
@@ -60,11 +81,11 @@ class EC2:
                     instance_id = instance['InstanceId']
                     keypair = instance['KeyName']
                     private_ip = instance['PrivateIpAddress']
+                    if index <= 0:
+                        return instance_id, keypair, private_ip
+                    index -= 1
 
-        if keypair and instance_id and private_ip:
-            return Instance(instance_id, private_ip, keypair)
-        else:
-            raise ESSHException('Could not find instance with ip address %s' % private_ip)
+        return instance_id, keypair, private_ip
 
     def _is_retryable_exception(exception):
         return not isinstance(exception, botocore.exceptions.ClientError)

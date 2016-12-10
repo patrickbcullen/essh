@@ -5,10 +5,7 @@ class SSHController:
         self.keypair = '%s/%s.%s' % (keypair_dir, keypair_name, keypair_extension)
         self.host = host
 
-    def command(self):
-        return "ssh -i %s %s" % (self.keypair, self.host)
-
-    def ssh(self):
-        command = self.command()
-        call(command, shell=True)
+    def ssh(self, command=''):
+        ssh_cmd = "ssh -i %s %s%s" % (self.keypair, self.host, command)
+        call(ssh_cmd, shell=True)
 
