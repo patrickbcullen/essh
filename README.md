@@ -24,7 +24,8 @@ essh <tag name>[1]
 ### How do you specify the username to use on the ssh command?
 Add the following to your ~/.ssh/config file:
 ```
-User centos
+Host *
+  User centos
 ```
 If you don't want to do this, essh will try different usernames in the following order: centos, ec2-user, ubuntu, admin, bitnami, and root.
 
