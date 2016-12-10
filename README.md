@@ -1,5 +1,5 @@
 # essh
-Enhanced ssh command line for EC2 that can find an instance by the instance id, instance name tag, or private IP address. 
+Enhanced ssh command line for EC2 that can find an instance by the instance id, instance name tag, or private IP address. It even supports indexing when multiple instances share the same name (i.e. auto-scaling groups).
 
 ## Install
 ```
@@ -8,9 +8,16 @@ pip install essh
 
 ## Usage
 ```
+# To ssh by instance id
 essh <instance id>
+# To run a command over ssh on instance id
+essh <instance id> ls /tmp
+# To ssh by private ip
 essh <private ip>
+# To ssh to the first instance with this name tag
 essh <tag name>
+# To ssh to the second instance with this name tag
+essh <tag name>[1] 
 ```
 
 ## FAQ
