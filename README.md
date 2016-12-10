@@ -26,6 +26,8 @@ Add the following to your ~/.ssh/config file:
 ```
 User centos
 ```
+If you don't want to do this, essh will try different usernames in the following order: centos, ec2-user, ubuntu, admin, bitnami, and root.
+
 ### How do you ignore IP address changes?
 Add the following to your ~/.ssh/config file:
 ```
