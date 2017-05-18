@@ -5,11 +5,11 @@ import click
 from ec2.controller import EC2Controller
 from ssh.controller import SSHController
 
-@click.command()
+@click.command(context_settings=dict(ignore_unknown_options=True,))
 @click.option('--keypair-dir', default="~/.ssh", help='Directory where keypair files are located')
 @click.option('--keypair-extension', default="pem", help='File extension for keypari files')
 @click.argument('target')
-@click.argument('command', nargs=-1)
+@click.argument('command', nargs=-1, type=click.UNPROCESSED)
 def cli(keypair_dir, keypair_extension, target, command):
     cmd = " ". join(command)
     if len(cmd) > 0:
