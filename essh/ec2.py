@@ -69,11 +69,12 @@ class EC2(object):
             {"Name": "instance-state-name", "Values": ["running"]},
             {"Name": "tag:Name", "Values": [name]}
         ]
-
+        message = 'with name %s' % name
         if self.zone:
             filters.append({"Name": "availability-zone", "Values": [self.zone]})
+            message += ' in zone %s' % self.zone
 
-        return self._find(filters, 'with name %s in zone %s' % (name, self.zone), index)
+        return self._find(filters, message, index)
 
     def _extra_index(self, name):
         index = 0
