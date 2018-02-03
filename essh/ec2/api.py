@@ -13,23 +13,31 @@ from essh.exceptions import ESSHException
 import re
 
 class EC2:
-    def __init__(self, ec2_client=None):
+    def __init__(self, ec2_client=None, profile_name=None, zone=None):
         logging.basicConfig(level=logging.ERROR)
         self.logger = logging.getLogger(__name__)
-        self.ec2 = ec2_client or self._get_ec2_client()
+        self.ec2 = ec2_client or self._get_ec2_client(profile_name, zone)
         self.array_regex = re.compile('\[([0-9]+)\]$')
+        self.zone = zone
 
     def _require_env_var(self, key):
         if key not in environ:
             raise ESSHException('Missing %s environment variable' % key)
         return environ[key]
 
-    def _get_ec2_client(self):
-        return boto3.client('ec2', aws_access_key_id=self._require_env_var('AWS_ACCESS_KEY_ID'),
+    def _get_ec2_client(self, profile_name, zone):
+        if profile_name:
+            session = boto3.Session(profile_name=profile_name)
+            if zone:
+                return session.client('ec2', region_name=zone[:-1])
+            else:
+                return session.client('ec2')
+        else:
+            return boto3.client('ec2', aws_access_key_id=self._require_env_var('AWS_ACCESS_KEY_ID'),
                             aws_secret_access_key=self._require_env_var('AWS_SECRET_ACCESS_KEY'),
                             region_name=environ.get('AWS_REGION', 'us-east-1'))
 
-    def find_by_name(self, name, zone=None):
+    def find_by_name(self, name):
         name, index = self._extra_index(name)
 
         filters = [
@@ -37,10 +45,10 @@ class EC2:
             {"Name": "tag:Name", "Values": [name]}
         ]
 
-        if zone:
-            filters.append({"Name": "availability-zone", "Values": [zone]})
+        if self.zone:
+            filters.append({"Name": "availability-zone", "Values": [self.zone]})
 
-        return self._find(filters, 'with name %s in zone %s' % (name, zone), index)
+        return self._find(filters, 'with name %s in zone %s' % (name, self.zone), index)
 
     def _extra_index(self, name):
         index = 0
