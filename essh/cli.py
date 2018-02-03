@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import click
-from ec2.controller import EC2Controller
-from ssh.controller import SSHController
+from essh.ec2 import EC2Controller
+from essh.ssh import SSHController
 from essh.exceptions import ESSHException
 
 @click.command(context_settings=dict(ignore_unknown_options=True,))

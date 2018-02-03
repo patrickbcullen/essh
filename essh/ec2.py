@@ -7,12 +7,30 @@ from time import sleep
 import time, datetime
 from retrying import retry
 from pprint import pprint
-from models import Instance
 from os import environ
 from essh.exceptions import ESSHException
 import re
 
-class EC2:
+class Instance(object):
+    def __init__(self, instance_id, private_ip, keypair):
+        self.instance_id = instance_id
+        self.private_ip = private_ip
+        self.keypair = keypair
+
+class EC2Controller(object):
+    def __init__(self, profile_name, zone):
+        self.instance_id_regex = re.compile('^i-')
+        self.ip_regex = re.compile('^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+        self.api = EC2(profile_name=profile_name, zone=zone)
+
+    def find(self, target):
+        if re.search(self.instance_id_regex, target) is not None:
+            return self.api.find_by_id(target)
+        elif re.search(self.ip_regex, target) is not None:
+            return self.api.find_by_ip(target)
+        else:
+            return self.api.find_by_name(target)
+class EC2(object):
     def __init__(self, ec2_client=None, profile_name=None, zone=None):
         logging.basicConfig(level=logging.ERROR)
         self.logger = logging.getLogger(__name__)

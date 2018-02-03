@@ -1,7 +1,7 @@
 from subprocess import call
 import os
 
-class SSHController:
+class SSHController(object):
     def __init__(self, keypair_dir, keypair_name, keypair_extension, host):
         self.keypair = '%s/%s.%s' % (keypair_dir, keypair_name, keypair_extension)
         self.host = host
