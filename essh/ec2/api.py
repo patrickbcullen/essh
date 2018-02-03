@@ -33,9 +33,16 @@ class EC2:
             else:
                 return session.client('ec2')
         else:
-            return boto3.client('ec2', aws_access_key_id=self._require_env_var('AWS_ACCESS_KEY_ID'),
-                            aws_secret_access_key=self._require_env_var('AWS_SECRET_ACCESS_KEY'),
-                            region_name=environ.get('AWS_REGION', 'us-east-1'))
+            kwargs = {
+                'aws_access_key_id': self._require_env_var('AWS_ACCESS_KEY_ID'),
+                'aws_secret_access_key': self._require_env_var('AWS_SECRET_ACCESS_KEY'),
+                'region_name': environ.get('AWS_REGION', 'us-east-1')
+            }
+
+            if environ.get('AWS_SESSION_TOKEN'):
+                kwargs['aws_session_token'] = environ.get('AWS_SESSION_TOKEN')
+
+            return boto3.client('ec2', **kwargs)
 
     def find_by_name(self, name):
         name, index = self._extra_index(name)
