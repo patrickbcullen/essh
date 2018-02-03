@@ -8,10 +8,10 @@ class EC2Controller:
         self.ip_regex = re.compile('^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
         self.api = EC2()
 
-    def find(self, target):
+    def find(self, target, zone=None):
         if re.search(self.instance_id_regex, target) is not None:
             return self.api.find_by_id(target)
         elif re.search(self.ip_regex, target) is not None:
             return self.api.find_by_ip(target)
         else:
-            return self.api.find_by_name(target)
+            return self.api.find_by_name(target, zone)

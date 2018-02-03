@@ -29,7 +29,7 @@ class EC2:
                             aws_secret_access_key=self._require_env_var('AWS_SECRET_ACCESS_KEY'),
                             region_name=environ.get('AWS_REGION', 'us-east-1'))
 
-    def find_by_name(self, name):
+    def find_by_name(self, name, zone=None):
         name, index = self._extra_index(name)
 
         filters = [
@@ -37,7 +37,10 @@ class EC2:
             {"Name": "tag:Name", "Values": [name]}
         ]
 
-        return self._find(filters, index)
+        if zone:
+            filters.append({"Name": "availability-zone", "Values": [zone]})
+
+        return self._find(filters, 'with name %s in zone %s' % (name, zone), index)
 
     def _extra_index(self, name):
         index = 0
@@ -53,21 +56,21 @@ class EC2:
             {"Name": "instance-state-name", "Values": ["running"]},
             {"Name": "instance-id", "Values": [id]}
         ]
-        return self._find(filters)
+        return self._find(filters, 'with id %s' % id)
 
     def find_by_ip(self, private_ip):
         filters = [
             {"Name": "instance-state-name", "Values": ["running"]},
             {"Name": "private-ip-address", "Values": [private_ip]}
         ]
-        return self._find(filters)
+        return self._find(filters, 'with private ip %s' % private_ip)
 
-    def _find(self, filters, index=0):
+    def _find(self, filters, message, index=0):
         instance_id, keypair, private_ip = self._find_by_index(filters, index)
         if keypair and instance_id and private_ip:
             return Instance(instance_id, private_ip, keypair)
         else:
-            raise ESSHException('Could not find instance with ip address %s' % private_ip)
+            raise ESSHException('No instance found %s' % message)
 
     def _find_by_index(self, filters, index=0):
         instance_id = None
